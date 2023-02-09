@@ -1,0 +1,29 @@
+version: '3'
+services:
+  postgresql:
+    image: postgres:alpine
+    volumes:
+      - ./DB/postgres:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: block1
+      POSTGRES_PASSWORD: block1
+      POSTGRES_DB: block1
+    ports:
+      - "5432:5432"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./hosts:/etc/nginx/conf.d
+      - ./app:/var/www
+      - ./logs/nginx:/var/log/nginx
+
+  php:
+    build: ./images/php
+    depends_on:
+      - postgresql
+    volumes:
+      - ./app:/var/www

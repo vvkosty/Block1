@@ -1,0 +1,2 @@
+1. Запустить контейнеры: docker-compose up -d
+2. Создать таблицы: docker-compose exec php ./vendor/bin/doctrine-migrations migrate
