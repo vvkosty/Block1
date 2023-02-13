@@ -1,0 +1,30 @@
+### Create device
+POST localhost/device/create
+Content-Type: application/json
+
+{
+    "tag1": "test",
+    "tag2": "false",
+    "tag3": "0",
+    "deviceId": "18"
+}
+
+### Edit device
+POST localhost/device/17/edit
+Content-Type: application/json
+
+{
+    "tag1": "test32",
+    "tag2": "false",
+    "tag3": "0"
+}
+
+### Search device
+POST localhost/device/search
+Content-Type: application/json
+
+{
+    "tag1": "test32",
+    "tag2": "false",
+    "tag3": "0"
+}

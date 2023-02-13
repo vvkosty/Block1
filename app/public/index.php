@@ -12,20 +12,22 @@ $deviceController = new DeviceController(
     new DeviceService($app->entityManager)
 );
 
+$request = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
 $url = $_SERVER['REQUEST_URI'];
 $matches = [];
 
 switch (true) {
     case preg_match("@^/device/create$@", $url):
-        print json_encode($deviceController->create($_POST), JSON_THROW_ON_ERROR);
+        $response = $deviceController->create($request);
+        print json_encode($response, JSON_THROW_ON_ERROR);
         break;
 
     case preg_match("@^/device/(\d+)/edit$@", $url, $matches):
-        $deviceController->edit((int)$matches[1], $_POST);
+        $deviceController->edit((int)$matches[1], $request);
         break;
 
-    case preg_match("@^/device\?.+$@", $url):
-        print json_encode($deviceController->search($_GET), JSON_THROW_ON_ERROR);
+    case preg_match("@^/device/search$@", $url):
+        print json_encode($deviceController->search($request), JSON_THROW_ON_ERROR);
         break;
     default:
         http_response_code(404);
