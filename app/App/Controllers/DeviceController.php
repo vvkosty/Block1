@@ -29,8 +29,8 @@ class DeviceController
     /**
      * @return int[]
      */
-    public function search(array $tags): array
+    public function search(string $query): array
     {
-        return $this->service->search($tags);
+        return $this->service->search($query);
     }
 }

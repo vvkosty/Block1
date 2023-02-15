@@ -23,6 +23,8 @@ services:
 
   php:
     build: ./images/php
+    environment:
+      PHP_IDE_CONFIG: serverName=Docker
     depends_on:
       - postgresql
     volumes:
