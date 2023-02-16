@@ -2,3 +2,4 @@
 /DB/
 /app/vendor/
 .idea
+.phpunit.result.cache

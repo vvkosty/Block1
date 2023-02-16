@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
         libonig-dev \
         libzip-dev \
         libpq-dev  \
+    && pecl install xdebug ds \
+    && docker-php-ext-enable xdebug ds \
     && docker-php-ext-install -j$(nproc) pdo pdo_pgsql pgsql zip
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

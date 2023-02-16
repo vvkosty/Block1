@@ -7,14 +7,15 @@ namespace App\Services;
 use App\Entities\Device;
 use App\Entities\DeviceTag;
 use App\Entities\Tag;
-use Doctrine\ORM\AbstractQuery;
+use App\Repositories\DeviceTagRepository;
+use App\Services\Parser\StackBuilder;
 use Doctrine\ORM\EntityManager;
-use Illuminate\Support\Arr;
 
 class DeviceService
 {
     public function __construct(
-        public EntityManager $entityManager
+        public EntityManager $entityManager,
+        public DeviceTagRepository $deviceRepository
     ) {
     }
 
@@ -47,49 +48,19 @@ class DeviceService
     /**
      * @return int[]
      */
-    public function search(array $tags): array
+    public function search(string $query): array
     {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb->select('dt', 'd')
-            ->from(DeviceTag::class, 'dt')
-            ->leftJoin('dt.tag', 't')
-            ->leftJoin('dt.device', 'd');
+        $stackBuilder = new StackBuilder();
+        $stackBuilder->parse($query);
 
-        $i = 0;
-        $j = 0;
-        foreach ($tags as $tagTitle => $tagValues) {
-            $andX = $qb->expr()->andX();
-
-            if (is_string($tagValues)) {
-                $andX->add($qb->expr()->andX("t.title = :tagTitle{$i}"));
-                $andX->add($qb->expr()->andX('dt.value = :tagValue'));
-                $qb->andWhere($andX)
-                    ->setParameter("tagTitle{$i}", $tagTitle)
-                    ->setParameter('tagValue', $tagValues);
-            } else {
-                $orX = $qb->expr()->orX();
-                foreach ($tagValues as $tagValue) {
-                    $qb->setParameter("tagValue{$j}", $tagValue);
-                    $orX->add("dt.value = :tagValue{$j}");
-                    $j++;
-                }
-
-                $andX->add($orX);
-                $andX->add($qb->expr()->andX("t.title = :tagTitle{$i}"));
-                $qb->andWhere($andX)->setParameter("tagTitle{$i}", $tagTitle);
-            }
-            $i++;
-        }
-
-        $result = $qb->getQuery()->execute(null, AbstractQuery::HYDRATE_SCALAR);
-
-        return Arr::pluck($result, 'd_id');
+        return $this->deviceRepository->search($stackBuilder->getStack());
     }
 
     protected function syncDevicesTags(Device $device, array $tags): void
     {
+        $repository = $this->entityManager->getRepository(Tag::class);
         foreach ($tags as $tagTitle => $tagValue) {
-            $tag = $this->entityManager->getRepository(Tag::class)->findOneBy(['title' => $tagTitle]);
+            $tag = $repository->findOneBy(['title' => $tagTitle]);
             if (!$tag) {
                 $tag = new Tag();
                 $tag->title = $tagTitle;
