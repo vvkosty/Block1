@@ -1,0 +1,8 @@
+173
+POST /device/search HTTP/1.1
+User-Agent: xxx/1.2.3
+Host: nginx
+Content-Type: application/json
+Connection: Close
+
+{"query": "T(\"Gender\", EQ, \"F\") + T(\"Age\", LTE, 20)"}

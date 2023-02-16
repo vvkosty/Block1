@@ -1,0 +1,18 @@
+overload:
+  enabled: true
+  package: yandextank.plugins.DataUploader
+  token_file: "token.txt"
+phantom:
+  address: nginx
+  ammofile: ammo.txt
+  load_profile:
+    load_type: rps
+    schedule: line(5, 30, 1m)
+  ssl: false
+autostop:
+  autostop:
+    - http(5xx,10%,5s)
+console:
+  enabled: true
+telegraf:
+  enabled: false

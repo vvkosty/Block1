@@ -16,6 +16,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - php
     volumes:
       - ./hosts:/etc/nginx/conf.d
       - ./app:/var/www
@@ -29,3 +31,8 @@ services:
       - postgresql
     volumes:
       - ./app:/var/www
+
+  yandex_tank:
+    image: direvius/yandex-tank:latest
+    volumes:
+      - ./yandex.tank:/var/loadtest
