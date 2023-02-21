@@ -3,20 +3,11 @@
 declare(strict_types=1);
 
 use App\Controllers\DeviceController;
-use App\Entities\DeviceTag;
-use App\Repositories\DeviceTagRepository;
-use App\Services\DeviceService;
-use Doctrine\ORM\Mapping\ClassMetadata;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require dirname(__DIR__) . '/config/bootstrap.php';
 
-$deviceController = new DeviceController(
-    new DeviceService(
-        $app->entityManager,
-        new DeviceTagRepository($app->entityManager, new ClassMetadata(DeviceTag::class)),
-    )
-);
+/** @var DeviceController $deviceController */
 
 $request = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
 $url = $_SERVER['REQUEST_URI'];

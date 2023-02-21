@@ -7,6 +7,7 @@ namespace App\Entities;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -18,11 +19,14 @@ use Doctrine\ORM\Mapping\Table;
 class DeviceTag
 {
     #[Id]
+    #[Column(type: Types::INTEGER)]
+    #[GeneratedValue]
+    public int $id;
+
     #[ManyToOne(targetEntity: Device::class)]
     public Device $device;
 
-    #[Id]
-    #[ManyToOne(targetEntity: Tag::class)]
+    #[ManyToOne(targetEntity: Tag::class, cascade: ['persist'])]
     public Tag $tag;
 
     #[Column(type: Types::STRING)]
