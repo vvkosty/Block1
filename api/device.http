@@ -5,7 +5,8 @@ Content-Type: application/json
 {
     "Age": "15",
     "Gender": "F",
-    "deviceId": "3"
+    "Gender2": "F",
+    "deviceId": "2"
 }
 
 ### Edit device

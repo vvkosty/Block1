@@ -7,15 +7,18 @@ namespace App\Services;
 use App\Entities\Device;
 use App\Entities\DeviceTag;
 use App\Entities\Tag;
+use App\Repositories\DeviceRepository;
 use App\Repositories\DeviceTagRepository;
 use App\Services\Parser\StackBuilder;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 
 class DeviceService
 {
     public function __construct(
         public EntityManager $entityManager,
-        public DeviceTagRepository $deviceRepository
+        public DeviceTagRepository $deviceTagRepository,
+        public DeviceRepository $deviceRepository,
     ) {
     }
 
@@ -53,7 +56,21 @@ class DeviceService
         $stackBuilder = new StackBuilder();
         $stackBuilder->parse($query);
 
-        return $this->deviceRepository->search($stackBuilder->getStack());
+        return $this->deviceTagRepository->search($stackBuilder->getStack());
+    }
+
+    public function removeByCreateDate(DateTime $from, DateTime $to): void
+    {
+        $devices = $this->deviceRepository->findByCreateDates($from, $to);
+
+        /** @var Device $device */
+        foreach ($devices as $device) {
+            $this->deviceTagRepository->removeByDevice($device);
+            sleep(10); // исскуственная задержка, для теста прерывания
+            $this->entityManager->remove($device);
+        }
+
+        $this->entityManager->flush();
     }
 
     protected function syncDevicesTags(Device $device, array $tags): void
