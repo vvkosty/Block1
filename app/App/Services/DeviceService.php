@@ -61,16 +61,26 @@ class DeviceService
 
     public function removeByCreateDate(DateTime $from, DateTime $to): void
     {
+        $batchSize = 20;
+        $i = 0;
+
         $devices = $this->deviceRepository->findByCreateDates($from, $to);
 
         /** @var Device $device */
         foreach ($devices as $device) {
+            $this->entityManager->beginTransaction();
             $this->deviceTagRepository->removeByDevice($device);
-            sleep(10); // исскуственная задержка, для теста прерывания
             $this->entityManager->remove($device);
-        }
+            sleep(10); // исскуственная задержка, для теста прерывания
 
-        $this->entityManager->flush();
+            if (($i % $batchSize) === 0 || !$devices->valid()) {
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+                $this->entityManager->commit();
+                pcntl_signal_dispatch();
+            }
+            ++$i;
+        }
     }
 
     protected function syncDevicesTags(Device $device, array $tags): void
