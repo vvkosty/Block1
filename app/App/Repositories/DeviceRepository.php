@@ -6,10 +6,11 @@ namespace App\Repositories;
 
 use DateTime;
 use Doctrine\ORM\EntityRepository;
+use Generator;
 
 class DeviceRepository extends EntityRepository
 {
-    public function findByCreateDates(DateTime $from, DateTime $to): array
+    public function findByCreateDates(DateTime $from, DateTime $to): Generator
     {
         $entity = $this->getEntityName();
 
@@ -17,6 +18,6 @@ class DeviceRepository extends EntityRepository
         $qb->setParameter('from', $from);
         $qb->setParameter('to', $to);
 
-        return $qb->execute();
+        return $qb->toIterable();
     }
 }

@@ -34,5 +34,4 @@ pcntl_signal(SIGTERM, static function () {
 echo "Removing {$dtStart->format('Y-m-d')} - {$dtEnd->format('Y-m-d')}...\n";
 $deviceService->removeByCreateDate($dtStart, $dtEnd);
 
-pcntl_signal_dispatch();
 echo "Done\n";
