@@ -6,3 +6,4 @@
 /yandex.tank/token.txt
 /yandex.tank/tank_errors.log
 /yandex.tank/logs/
+.env

@@ -15,11 +15,11 @@ class App
     public function __construct()
     {
         $dbParams = [
-            'driver' => 'pdo_pgsql',
-            'user' => 'block1',
-            'password' => 'block1',
-            'host' => 'postgresql',
-            'dbname' => 'block1',
+            'driver' => $_ENV['DB_DRIVER'],
+            'user' => $_ENV['DB_USER'],
+            'password' => $_ENV['DB_PASSWORD'],
+            'host' => $_ENV['DB_HOST'],
+            'dbname' => $_ENV['DB_DBNAME'],
         ];
 
         $config = ORMSetup::createAttributeMetadataConfiguration(['App\Entities']);
