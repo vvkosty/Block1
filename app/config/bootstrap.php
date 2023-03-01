@@ -11,6 +11,9 @@ use App\Repositories\DeviceTagRepository;
 use App\Services\DeviceService;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 $app = new App();
 
 $deviceService = new DeviceService(
