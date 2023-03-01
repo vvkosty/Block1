@@ -22,6 +22,9 @@ class Device
     #[GeneratedValue(strategy: 'NONE')]
     public int $id;
 
+    #[Column(type: Types::STRING, nullable: true)]
+    public string $email;
+
     #[Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;
 

@@ -3,6 +3,7 @@
         "doctrine/dbal": "^3.6",
         "doctrine/migrations": "^3.5",
         "doctrine/orm": "^2.14",
+        "fakerphp/faker": "^1.21",
         "guzzlehttp/guzzle": "^7.5",
         "illuminate/support": "^9.51",
         "symfony/cache": "^6.2",

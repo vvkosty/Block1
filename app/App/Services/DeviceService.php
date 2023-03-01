@@ -12,6 +12,7 @@ use App\Repositories\DeviceTagRepository;
 use App\Services\Parser\StackBuilder;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use Faker\Factory;
 
 class DeviceService
 {
@@ -81,6 +82,27 @@ class DeviceService
             }
             ++$i;
         }
+    }
+
+    public function recreateEmails(): void
+    {
+        $batchSize = 20;
+        $i = 1;
+        $faker = Factory::create();
+
+        $devices = $this->deviceRepository->getAllIterable();
+
+        foreach ($devices as $device) {
+            ++$i;
+            $device->email = $faker->email();
+            if (($i % $batchSize) === 0) {
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+            }
+        }
+
+        $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
     protected function syncDevicesTags(Device $device, array $tags): void

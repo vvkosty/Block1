@@ -20,4 +20,11 @@ class DeviceRepository extends EntityRepository
 
         return $qb->toIterable();
     }
+
+    public function getAllIterable(): Generator
+    {
+        $entity = $this->getEntityName();
+
+        return $this->_em->createQuery("SELECT d FROM $entity d")->toIterable();
+    }
 }
