@@ -9,10 +9,12 @@ use App\Entities\DeviceTag;
 use App\Entities\Tag;
 use App\Repositories\DeviceRepository;
 use App\Repositories\DeviceTagRepository;
+use App\Repositories\TagRepository;
 use App\Services\Parser\StackBuilder;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Faker\Factory;
+use NotificationSender;
 
 class DeviceService
 {
@@ -20,6 +22,8 @@ class DeviceService
         public EntityManager $entityManager,
         public DeviceTagRepository $deviceTagRepository,
         public DeviceRepository $deviceRepository,
+        public TagRepository $tagRepository,
+        public NotificationSender $notificationSender,
     ) {
     }
 
@@ -105,6 +109,16 @@ class DeviceService
         $this->entityManager->clear();
     }
 
+    public function updateTagValue(int $deviceId, string $tagName, string $tagValue): void
+    {
+        /** @var Device $device */
+        $device = $this->deviceRepository->find($deviceId);
+
+        $this->saveTagValue($tagName, $device, $tagValue);
+
+        $this->notificationSender->send($device);
+    }
+
     protected function syncDevicesTags(Device $device, array $tags): void
     {
         $repository = $this->entityManager->getRepository(Tag::class);
@@ -126,6 +140,19 @@ class DeviceService
             $this->entityManager->persist($deviceTag);
         }
 
+        $this->entityManager->flush();
+    }
+
+    protected function saveTagValue(string $tagName, Device $device, string $tagValue): void
+    {
+        /** @var Tag $tag */
+        $tag = $this->tagRepository->findOneBy(['title' => $tagName]);
+
+        /** @var DeviceTag $deviceTag */
+        $deviceTag = $this->deviceTagRepository->findOneBy(['device' => $device, 'tag' => $tag]);
+
+        $deviceTag->value = $tagValue;
+        $this->entityManager->persist($deviceTag);
         $this->entityManager->flush();
     }
 }

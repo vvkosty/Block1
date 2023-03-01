@@ -10,6 +10,16 @@ require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 require dirname(__DIR__, 2) . '/config/bootstrap.php';
 
 /** @var DeviceService $deviceService */
-$deviceService->recreateEmails();
 
-echo "Emails recreated\n";
+$deviceId = (int)$argv[1];
+$tagValue = $argv[2];
+
+if (!$deviceId || !$tagValue) {
+    echo "Incorrect params\n";
+
+    return;
+}
+
+$deviceService->updateTagValue($deviceId, $_ENV['TAG_NOTIFICATION'], $tagValue);
+
+echo "Done\n";
