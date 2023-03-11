@@ -22,13 +22,13 @@ class EmailNotificationSender implements NotificationSender
 
     public function send(Device $device): void
     {
-        if (!$device->email) {
+        if (!isset($device->email)) {
             return;
         }
 
         $email = (new Email())
             ->from('block3@example.com')
-            ->to('you@example.com')
+            ->to($device->email)
             ->subject('Tag updated')
             ->text('Tag updated');
 

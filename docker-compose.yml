@@ -19,6 +19,7 @@ services:
     depends_on:
       - php
       - mailcatcher
+      - rabbitmq
     volumes:
       - ./hosts:/etc/nginx/conf.d
       - ./app:/var/www
@@ -44,3 +45,8 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
+  
+  rabbitmq:
+    build: ./images/rabbitmq
+    ports:
+      - "15672:15672"

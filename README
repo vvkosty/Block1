@@ -3,5 +3,7 @@
 3. Запуск Yandex.tank: docker-compose run yandex_tank
 4. Удаление девайсов: docker-compose exec php php ./App/Commands/remove_devices.php 2023-01-25 2023-02-03
 5. Заполнение поля email у всех девайсов: docker-compose exec php php ./App/Commands/fill_device_email.php
-6. Обновление заданного тега девайса: docker-compose exec php php ./App/Commands/update_device_tag_value.php <deviceId> <tagValue>
-    Результаты доступны по http://127.0.0.1:1080
+6. Обновление заданного тега девайса: 
+	6.1 Запустить скрипт отправки письма из очереди: docker-compose exec php php ./App/Commands/send_email.consumer.php
+	6.2 Обновить тег: docker-compose exec php php ./App/Commands/update_device_tag_value.php <deviceId> <tagValue>
+		Результаты доступны по http://127.0.0.1:1080

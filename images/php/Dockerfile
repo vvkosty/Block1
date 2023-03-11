@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     && pecl install xdebug ds \
     && docker-php-ext-enable xdebug ds \
     && docker-php-ext-configure pcntl --enable-pcntl \
-    && docker-php-ext-install -j$(nproc) pdo pdo_pgsql pgsql zip pcntl
+    && docker-php-ext-install -j$(nproc) pdo pdo_pgsql pgsql zip pcntl bcmath sockets
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

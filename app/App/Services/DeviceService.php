@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Services;
 
@@ -15,9 +15,12 @@ use DateTime;
 use Doctrine\ORM\EntityManager;
 use Faker\Factory;
 use NotificationSender;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 class DeviceService
 {
+
     public function __construct(
         public EntityManager $entityManager,
         public DeviceTagRepository $deviceTagRepository,
@@ -116,7 +119,22 @@ class DeviceService
 
         $this->saveTagValue($tagName, $device, $tagValue);
 
-        $this->notificationSender->send($device);
+        $connection = new AMQPStreamConnection(
+            $_ENV['RABBITMQ_HOST'],
+            $_ENV['RABBITMQ_PORT'],
+            $_ENV['RABBITMQ_USER'],
+            $_ENV['RABBITMQ_PASSWORD']
+        );
+        $channel = $connection->channel();
+
+        $channel->queue_declare('tag_updated', false, false, false, false);
+                $channel->queue_bind('tag_updated', 'email');
+
+        $msg = new AMQPMessage($deviceId);
+        $channel->basic_publish($msg, 'email');
+
+        $channel->close();
+        $connection->close();
     }
 
     protected function syncDevicesTags(Device $device, array $tags): void

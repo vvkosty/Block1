@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 use App\App;
 use App\Controllers\DeviceController;
@@ -11,6 +11,7 @@ use App\Repositories\DeviceRepository;
 use App\Repositories\DeviceTagRepository;
 use App\Repositories\TagRepository;
 use App\Services\DeviceService;
+use App\Services\EmailService;
 use App\Services\Notification\EmailNotificationSender;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
@@ -28,3 +29,8 @@ $deviceService = new DeviceService(
 );
 
 $deviceController = new DeviceController($deviceService);
+
+$emailService = new EmailService(
+    new DeviceRepository($app->entityManager, new ClassMetadata(Device::class)),
+    new EmailNotificationSender(),
+);
