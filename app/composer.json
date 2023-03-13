@@ -2,6 +2,7 @@
     "require": {
         "doctrine/dbal": "^3.6",
         "doctrine/migrations": "^3.5",
+        "doctrine/mongodb-odm": "^2.5",
         "doctrine/orm": "^2.14",
         "fakerphp/faker": "^1.21",
         "guzzlehttp/guzzle": "^7.5",
