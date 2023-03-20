@@ -10,6 +10,19 @@ services:
       POSTGRES_DB: block1
     ports:
       - "5432:5432"
+  
+  mongo:
+    image: mongo:6.0
+    restart: always
+    volumes:
+      - ./images/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: block1
+      MONGO_INITDB_ROOT_USERNAME: block1
+      MONGO_INITDB_ROOT_PASSWORD: block1
+    ports:
+      - "27017:27017"
 
   nginx:
     image: nginx:alpine
@@ -30,7 +43,8 @@ services:
     environment:
       PHP_IDE_CONFIG: serverName=Docker
     depends_on:
-      - postgresql
+      - mongo
+      - redis
     volumes:
       - ./app:/var/www
 
@@ -50,3 +64,11 @@ services:
     build: ./images/rabbitmq
     ports:
       - "15672:15672"
+        
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongo_data:

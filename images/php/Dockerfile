@@ -9,8 +9,11 @@ RUN apt-get update && apt-get install -y \
         libonig-dev \
         libzip-dev \
         libpq-dev  \
-    && pecl install xdebug ds \
-    && docker-php-ext-enable xdebug ds \
+        libcurl4-openssl-dev  \
+        pkg-config  \
+        libssl-dev \
+    && pecl install xdebug ds mongodb redis \
+    && docker-php-ext-enable xdebug ds mongodb redis \
     && docker-php-ext-configure pcntl --enable-pcntl \
     && docker-php-ext-install -j$(nproc) pdo pdo_pgsql pgsql zip pcntl bcmath sockets
 

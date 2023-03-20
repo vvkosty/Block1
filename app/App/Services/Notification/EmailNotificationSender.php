@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services\Notification;
 
-use App\Entities\Device;
-use NotificationSender;
+use App\Interfaces\NotificationSenderInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
 
-class EmailNotificationSender implements NotificationSender
+class EmailNotificationSender implements NotificationSenderInterface
 {
     private Mailer $mailer;
 
@@ -20,18 +19,14 @@ class EmailNotificationSender implements NotificationSender
         $this->mailer = new Mailer($transport);
     }
 
-    public function send(Device $device): void
+    public function send(string $email): void
     {
-        if (!isset($device->email)) {
-            return;
-        }
-
-        $email = (new Email())
-            ->from('block3@example.com')
-            ->to($device->email)
-            ->subject('Tag updated')
-            ->text('Tag updated');
-
-        $this->mailer->send($email);
+        $this->mailer->send(
+            (new Email())
+                ->from('block3@example.com')
+                ->to($email)
+                ->subject('Tag updated')
+                ->text('Tag updated')
+        );
     }
 }

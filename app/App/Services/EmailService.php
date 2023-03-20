@@ -1,26 +1,27 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Entities\Device;
-use App\Repositories\DeviceRepository;
-use NotificationSender;
+use App\Interfaces\DeviceRepositoryInterface;
+use App\Interfaces\NotificationSenderInterface;
 
 class EmailService
 {
 
     public function __construct(
-        public DeviceRepository $deviceRepository,
-        public NotificationSender $notificationSender,
+        public DeviceRepositoryInterface $deviceRepository,
+        public NotificationSenderInterface $notificationSender,
     ) {
     }
 
     public function send(int $deviceId): void
     {
-        /** @var Device $device */
         $device = $this->deviceRepository->find($deviceId);
-        $this->notificationSender->send($device);
+
+        if ($device->email) {
+            $this->notificationSender->send($device->email);
+        }
     }
 }

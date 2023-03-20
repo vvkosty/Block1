@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Services\DeviceService;
+use App\Interfaces\DeviceServiceInterface;
 
 class DeviceController
 {
     public function __construct(
-        public DeviceService $service
+        public DeviceServiceInterface $service
     ) {
     }
 
