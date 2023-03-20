@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Unit;
 
+use App\Enums\TagOperation;
 use App\Services\Parser\StackBuilder;
 use App\Services\Parser\Tag;
-use App\Services\Parser\TagOperation;
 use PHPUnit\Framework\TestCase;
 
 class DeviceTest extends TestCase

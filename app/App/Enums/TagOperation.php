@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Parser;
+namespace App\Enums;
 
 enum TagOperation
 {

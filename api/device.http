@@ -3,20 +3,19 @@ POST localhost/device/create
 Content-Type: application/json
 
 {
-    "Age": "15",
+    "Age": 15,
     "Gender": "F",
     "Gender2": "F",
-    "deviceId": "2"
+    "deviceId": "1"
 }
 
 ### Edit device
-POST localhost/device/17/edit
+POST localhost/device/1/edit
 Content-Type: application/json
 
 {
-    "tag1": "test32",
-    "tag2": "false",
-    "tag3": "0"
+    "Age": 12,
+    "Gender": "F"
 }
 
 ### Search device

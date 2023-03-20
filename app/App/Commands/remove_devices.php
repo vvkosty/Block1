@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\Services\DeviceService;
+use App\Core\App;
 use DateTime;
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 require dirname(__DIR__, 2) . '/config/bootstrap.php';
-
-/** @var DeviceService $deviceService */
 
 pcntl_async_signals(false);
 
@@ -32,6 +30,7 @@ pcntl_signal(SIGTERM, static function () {
 });
 
 echo "Removing {$dtStart->format('Y-m-d')} - {$dtEnd->format('Y-m-d')}...\n";
-$deviceService->removeByCreateDate($dtStart, $dtEnd);
+/** @var App $app */
+$app->getDeviceService()->removeByCreateDate($dtStart, $dtEnd);
 
 echo "Done\n";

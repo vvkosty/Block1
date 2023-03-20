@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\Services\DeviceService;
+use App\Core\App;
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 require dirname(__DIR__, 2) . '/config/bootstrap.php';
 
-/** @var DeviceService $deviceService */
+/** @var App $app */
 
 $deviceId = (int)$argv[1];
-$tagValue = $argv[2];
+$tagValue = (string)$argv[2];
 
 if (!$deviceId || !$tagValue) {
     echo "Incorrect params\n";
@@ -20,6 +20,6 @@ if (!$deviceId || !$tagValue) {
     return;
 }
 
-$deviceService->updateTagValue($deviceId, $_ENV['TAG_NOTIFICATION'], $tagValue);
+$app->getDeviceService()->updateTagValue($deviceId, $_ENV['TAG_NOTIFICATION'], $tagValue);
 
 echo "Done\n";
