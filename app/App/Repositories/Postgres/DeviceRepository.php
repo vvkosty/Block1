@@ -60,8 +60,23 @@ class DeviceRepository extends EntityRepository implements DeviceRepositoryInter
         $this->_em->persist($device);
 
         $this->syncDevicesTags($device, $tags);
+        $this->_em->flush();
 
         return $device;
+    }
+
+    public function createBatch(array $devices): void
+    {
+        foreach ($devices as $deviceId => $tags) {
+            $device = new Device();
+            $device->id = $deviceId;
+            $this->_em->persist($device);
+            $this->syncDevicesTags($device, $tags);
+        }
+
+        $this->_em->flush();
+        $this->_em->clear();
+        
     }
 
     public function edit(int $deviceId, array $tags): void
@@ -76,6 +91,7 @@ class DeviceRepository extends EntityRepository implements DeviceRepositoryInter
 
         if ($device) {
             $this->syncDevicesTags($device, $tags);
+            $this->_em->flush();
         }
     }
 
@@ -159,8 +175,6 @@ class DeviceRepository extends EntityRepository implements DeviceRepositoryInter
 
             $this->_em->persist($deviceTag);
         }
-
-        $this->_em->flush();
     }
 
     private function setTag(Query $q, Tag $tag, ?int $i = null): void

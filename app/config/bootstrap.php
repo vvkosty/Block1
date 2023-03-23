@@ -8,4 +8,4 @@ use App\Enums\AppDatabase;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$app = AppBuilder::createApp(AppDatabase::POSTGRESQL);
+$app = AppBuilder::createApp(AppDatabase::MONGODB);

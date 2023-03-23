@@ -24,7 +24,7 @@ class AppMongo extends App
 
     public function createDatabaseConnection(): void
     {
-        $dirname = dirname(__DIR__, 2);
+        $dirname = dirname(__DIR__);
 
         $config = new Configuration();
         $config->setProxyDir($dirname . '/Proxies');

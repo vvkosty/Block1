@@ -55,6 +55,19 @@ class DeviceRepository extends DocumentRepository implements DeviceRepositoryInt
         return $device;
     }
 
+    public function createBatch(array $devices): void
+    {
+        foreach ($devices as $deviceId => $tags) {
+            $device = new Device();
+            $device->id = $deviceId;
+            $this->fillTags($device, $tags);
+            $this->dm->persist($device);
+        }
+
+        $this->dm->flush();
+        $this->dm->clear();
+    }
+
     public function edit(int $deviceId, array $tags): void
     {
         $device = $this->dm->find(Device::class, $deviceId);
