@@ -11,6 +11,8 @@ interface DeviceRepositoryInterface
 {
     public function create(int $deviceId, array $tags);
 
+    public function createBatch(array $devices): void;
+
     public function edit(int $deviceId, array $tags): void;
 
     public function search(Stack $infixStack): array;
