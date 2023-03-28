@@ -51,10 +51,6 @@ class AppMongo extends App
 
     public function getDeviceRepository(): DeviceRepositoryInterface
     {
-        return $this->deviceRepository ?? new DeviceRepository(
-            $this->objectManager,
-            $this->objectManager->getUnitOfWork(),
-            new ClassMetadata(Device::class)
-        );
+        return $this->deviceRepository ?? $this->objectManager->getRepository(Device::class);
     }
 }
