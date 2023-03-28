@@ -44,9 +44,6 @@ class AppPostgres extends App
 
     public function getDeviceRepository(): DeviceRepositoryInterface
     {
-        return $this->deviceRepository ?? new DeviceRepository(
-            $this->objectManager,
-            new ClassMetadata(Device::class)
-        );
+        return $this->deviceRepository ?? $this->objectManager->getRepository(Device::class);
     }
 }

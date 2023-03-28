@@ -20,7 +20,7 @@ class EmailService
     {
         $device = $this->deviceRepository->find($deviceId);
 
-        if ($device->email) {
+        if (isset($device->email)) {
             $this->notificationSender->send($device->email);
         }
     }

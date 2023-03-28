@@ -15,6 +15,7 @@ use App\Services\Parser\PostfixConverter;
 use App\Services\Parser\Tag;
 use App\Services\Parser\TagValueOperation;
 use DateTime;
+use Doctrine\ODM\MongoDB\Iterator\CachingIterator;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
@@ -27,17 +28,26 @@ class DeviceRepository extends DocumentRepository implements DeviceRepositoryInt
 {
     public function recreateEmails(): void
     {
-        $batchSize = 20;
+        $batchSize = 500;
         $i = 1;
+        $processed = 0;
         $faker = Factory::create();
 
-        foreach ($this->findAll() as $device) {
-            ++$i;
+        /** @var CachingIterator $iterator */
+        $iterator = $this->createQueryBuilder()
+            ->setRewindable(false)
+            ->getQuery()->execute();
+        foreach ($iterator as $device) {
             $device->email = $faker->email();
+            $this->dm->persist($device);
             if (($i % $batchSize) === 0) {
                 $this->dm->flush();
                 $this->dm->clear();
+
+                $processed += $batchSize;
+                echo sprintf("Managed: %d\n%.2f MB\n", $processed, round(memory_get_usage() / 1024 / 1024, 2)) . "\e[F" . "\e[F";
             }
+            $i++;
         }
 
         $this->dm->flush();
@@ -81,7 +91,6 @@ class DeviceRepository extends DocumentRepository implements DeviceRepositoryInt
         $this->dm->flush();
     }
 
-    /** "T(\"Gender\", EQ, \"F\") + T(\"Age\", LTE, 20)" */
     public function search(Stack $infixStack): array
     {
         $postfixStack = PostfixConverter::toPostfix($infixStack);

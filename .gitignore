@@ -7,3 +7,4 @@
 /yandex.tank/tank_errors.log
 /yandex.tank/logs/
 .env
+/app/logs
