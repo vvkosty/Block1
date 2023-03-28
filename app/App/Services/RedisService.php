@@ -30,8 +30,8 @@ class RedisService
         return $cachedResult ? json_decode($cachedResult, false, 512, JSON_THROW_ON_ERROR) : null;
     }
 
-    public function set(string $key, mixed $data)
+    public function set(string $key, mixed $data, int $ttl = 3600): void
     {
-        return $this->client->set($key, json_encode($data, JSON_THROW_ON_ERROR));
+        $this->client->set($key, json_encode($data, JSON_THROW_ON_ERROR), null, $ttl);
     }
 }
