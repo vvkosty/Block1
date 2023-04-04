@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Core\App;
+use DateTimeImmutable;
 use Faker\Factory;
 use Illuminate\Support\Arr;
 
@@ -17,6 +18,12 @@ $faker = Factory::create();
 $tags = [];
 for ($i = 0; $i < 50; $i++) {
     $tags[$faker->word()] = $faker->word();
+}
+
+/** @var DateTimeImmutable[] $createdDates */
+$createdDates = [];
+for ($i = 0; $i < 25; $i++) {
+    $createdDates[] = new DateTimeImmutable($faker->dateTimeBetween('-1 month')->format('Y-m-d'));
 }
 
 $totalRows = 10000;
@@ -43,7 +50,10 @@ while ($processedRows < $totalRows) {
             $from = $processedRows + 1;
             $to = $from + $batch;
             while ($from < $to) {
-                $devices[$from] = Arr::random($tags, random_int(1, 20), true);
+                $devices[$from] = [
+                    'tags' => Arr::random($tags, random_int(1, 20), true),
+                    'createdAt' => Arr::random($createdDates),
+                ];
                 $from++;
             }
             $deviceRepository->createBatch($devices);

@@ -42,7 +42,7 @@ class DeviceRepository extends DocumentRepository implements DeviceRepositoryInt
             $this->dm->persist($device);
             if (($i % $batchSize) === 0) {
                 $this->dm->flush();
-                $this->dm->clear();
+                $this->dm->detach($device);
 
                 $processed += $batchSize;
                 echo sprintf("Managed: %d\n%.2f MB\n", $processed, round(memory_get_usage() / 1024 / 1024, 2)) . "\e[F" . "\e[F";
@@ -67,10 +67,13 @@ class DeviceRepository extends DocumentRepository implements DeviceRepositoryInt
 
     public function createBatch(array $devices): void
     {
-        foreach ($devices as $deviceId => $tags) {
+        foreach ($devices as $deviceId => $data) {
             $device = new Device();
             $device->id = $deviceId;
-            $this->fillTags($device, $tags);
+            $this->fillTags($device, $data['tags']);
+            if (isset($data['createdAt'])) {
+                $device->createdAt = $data['createdAt'];
+            }
             $this->dm->persist($device);
         }
 
@@ -171,16 +174,18 @@ class DeviceRepository extends DocumentRepository implements DeviceRepositoryInt
             ->range($from, $to);
 
         $devices = $qb->getQuery()->execute();
+        $devices = $devices->toArray();
+        $keyLast = array_key_last($devices);
 
         /** @var Device $device */
-        foreach ($devices as $device) {
+        foreach ($devices as $key => $device) {
             $this->dm->remove($device);
 
-            // sleep(10); // исскуственная задержка, для теста прерывания
+            // sleep(2); // исскуственная задержка, для теста прерывания
 
-            if (($i % $batchSize) === 0 || !$devices->valid()) {
+            if (($i % $batchSize) === 0 || $key === $keyLast) {
                 $this->dm->flush();
-                $this->dm->clear();
+                $this->dm->detach($device);
                 pcntl_signal_dispatch();
             }
             ++$i;

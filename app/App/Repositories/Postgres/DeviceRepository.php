@@ -67,16 +67,18 @@ class DeviceRepository extends EntityRepository implements DeviceRepositoryInter
 
     public function createBatch(array $devices): void
     {
-        foreach ($devices as $deviceId => $tags) {
+        foreach ($devices as $deviceId => $data) {
             $device = new Device();
             $device->id = $deviceId;
+            if (isset($data['createdAt'])) {
+                $device->createdAt = $data['createdAt'];
+            }
             $this->_em->persist($device);
-            $this->syncDevicesTags($device, $tags);
+            $this->syncDevicesTags($device, $data['tags']);
         }
 
         $this->_em->flush();
         $this->_em->clear();
-        
     }
 
     public function edit(int $deviceId, array $tags): void
